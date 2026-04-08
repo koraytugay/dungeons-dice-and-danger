@@ -181,15 +181,6 @@
             color: #64748b;
         }
 
-        .black-indicator {
-            width: 6px;
-            height: 6px;
-            background: #000;
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: 3px;
-        }
-
         .die-wrapper {
             display: flex;
             flex-direction: column;
@@ -211,7 +202,7 @@
 </head>
 <body>
 
-    <h1>Dungeons, Dice & Danger</h1>
+    <h1>Dungeons, Dice & Danger Roller</h1>
 
     <div class="dice-container" id="diceContainer">
         <div class="die-wrapper"><div class="die white">?</div></div>
@@ -351,14 +342,23 @@
             results.forEach(res => {
                 const el = document.createElement('div');
                 el.className = `combination ${res.hasBlackInSet ? 'has-black' : ''}`;
+                
+                function formatPairDetail(pairObj) {
+                    const d1 = pairObj.dice[0];
+                    const d2 = pairObj.dice[1];
+                    const v1 = d1.type === 'black' ? `<strong>${d1.value}</strong>` : d1.value;
+                    const v2 = d2.type === 'black' ? `<strong>${d2.value}</strong>` : d2.value;
+                    return `${v1} + ${v2}`;
+                }
+
                 el.innerHTML = `
                     <div class="pairing ${res.p1.isDoubles ? 'is-doubles' : ''}">
-                        <div class="pairing-sum">${res.p1.sum}${res.p1.hasBlack ? '<span class="black-indicator"></span>' : ''}</div>
-                        <div class="pairing-detail">${res.p1.dice[0].value} + ${res.p1.dice[1].value}</div>
+                        <div class="pairing-sum">${res.p1.sum}</div>
+                        <div class="pairing-detail">${formatPairDetail(res.p1)}</div>
                     </div>
                     <div class="pairing ${res.p2.isDoubles ? 'is-doubles' : ''}">
-                        <div class="pairing-sum">${res.p2.sum}${res.p2.hasBlack ? '<span class="black-indicator"></span>' : ''}</div>
-                        <div class="pairing-detail">${res.p2.dice[0].value} + ${res.p2.dice[1].value}</div>
+                        <div class="pairing-sum">${res.p2.sum}</div>
+                        <div class="pairing-detail">${formatPairDetail(res.p2)}</div>
                     </div>
                 `;
                 container.appendChild(el);
