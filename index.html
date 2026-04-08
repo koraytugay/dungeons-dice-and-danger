@@ -371,7 +371,7 @@
         }
 
         function createPairObj(pair) {
-            const sortedDice = [...pair].sort((a, b) => a.value - b.value);
+            const sortedDice = [...pair].sort((a, b) => b.value - a.value);
             return {
                 dice: sortedDice,
                 sum: sortedDice[0].value + sortedDice[1].value,
