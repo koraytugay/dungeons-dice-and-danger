@@ -371,11 +371,12 @@
         }
 
         function createPairObj(pair) {
+            const sortedDice = [...pair].sort((a, b) => a.value - b.value);
             return {
-                dice: pair,
-                sum: pair[0].value + pair[1].value,
-                hasBlack: pair[0].type === 'black' || pair[1].type === 'black',
-                isDoubles: pair[0].value === pair[1].value
+                dice: sortedDice,
+                sum: sortedDice[0].value + sortedDice[1].value,
+                hasBlack: sortedDice[0].type === 'black' || sortedDice[1].type === 'black',
+                isDoubles: sortedDice[0].value === sortedDice[1].value
             };
         }
     </script>
