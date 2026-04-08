@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dungeons, Dice & Danger</title>
+    <title>Dungeons, Dice & Danger Roller</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -155,8 +155,8 @@
         }
 
         .pair-square {
-            width: 54px;
-            height: 54px;
+            width: 64px;
+            height: 64px;
             border-radius: 10px;
             background: var(--white-die-bg);
             display: flex;
@@ -182,17 +182,47 @@
         }
 
         .pair-sum {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 800;
             line-height: 1;
             color: var(--text-color);
         }
 
         .pair-dice {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            margin-top: 3px;
+        }
+
+        .mini-die {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .mini-die.white {
+            background-color: var(--white-die-bg);
+            color: var(--white-die-text);
+        }
+
+        .mini-die.black {
+            background-color: var(--black-die-bg);
+            color: var(--black-die-text);
+            border-color: #000;
+        }
+
+        .plus-sign {
             font-size: 0.65rem;
-            color: #64748b;
-            margin-top: 1px;
-            font-weight: 600;
+            color: #94a3b8;
+            font-weight: bold;
         }
 
         .die-wrapper {
@@ -313,7 +343,6 @@
                 const p1 = createPairObj(pairSet[0]);
                 const p2 = createPairObj(pairSet[1]);
                 
-                // Sort sums descending (larger first)
                 const sums = [p1.sum, p2.sum].sort((a, b) => b - a);
                 const hasBlackInSet = p1.hasBlack || p2.hasBlack;
 
@@ -348,10 +377,6 @@
                 sets.forEach(set => addOption(set));
             }
 
-            // Custom Sort: 
-            // 1. Sets WITHOUT black die first
-            // 2. Then by sum1 (descending)
-            // 3. Then by sum2 (descending)
             const results = Array.from(uniqueOptions.values()).sort((a, b) => {
                 if (a.hasBlackInSet !== b.hasBlackInSet) return a.hasBlackInSet ? 1 : -1;
                 if (a.p1.sum !== b.p1.sum) return b.p1.sum - a.p1.sum;
@@ -362,10 +387,14 @@
                 const el = document.createElement('div');
                 el.className = `combination`;
                 
-                function formatDice(pair) {
-                    const v1 = pair.dice[0].type === 'black' ? `<strong>${pair.dice[0].value}</strong>` : pair.dice[0].value;
-                    const v2 = pair.dice[1].type === 'black' ? `<strong>${pair.dice[1].value}</strong>` : pair.dice[1].value;
-                    return `${v1} + ${v2}`;
+                function formatDice(pairObj) {
+                    const d1 = pairObj.dice[0];
+                    const d2 = pairObj.dice[1];
+                    return `
+                        <div class="mini-die ${d1.type}">${d1.value}</div>
+                        <div class="plus-sign">+</div>
+                        <div class="mini-die ${d2.type}">${d2.value}</div>
+                    `;
                 }
 
                 el.innerHTML = `
