@@ -17,6 +17,10 @@
             --doubles-bg: #dcfce7;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
@@ -139,16 +143,16 @@
 
         .combinations {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
             width: 100%;
             transition: opacity 0.3s;
         }
 
         @media (max-width: 480px) {
             .combinations {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 0.75rem;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 1rem;
             }
         }
 
@@ -159,29 +163,27 @@
 
         .combination {
             background-color: var(--card-bg);
-            padding: 1.75rem;
-            border-radius: 20px;
+            padding: 2.5rem;
+            border-radius: 24px;
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
             border: 2px solid #e2e8f0;
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .combination.has-black {
             border-color: #000000;
             border-width: 3px;
-            padding: 1.75rem;
         }
 
         @media (max-width: 480px) {
             .combination {
-                padding: 0.75rem;
-                gap: 0.75rem;
-                border-radius: 14px;
+                padding: 1.25rem;
+                gap: 1rem;
+                border-radius: 16px;
             }
             .combination.has-black {
-                padding: 0.75rem;
                 border-width: 2px;
             }
         }
@@ -198,6 +200,7 @@
             border: 2px solid #e5e7eb;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             transition: transform 0.1s;
+            flex-shrink: 0;
         }
 
         @media (max-width: 480px) {
