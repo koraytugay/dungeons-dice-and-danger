@@ -155,16 +155,17 @@
         }
 
         .pair-square {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            background: #f8fafc;
+            width: 54px;
+            height: 54px;
+            border-radius: 10px;
+            background: var(--white-die-bg);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border: 2px solid transparent;
-            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.1s;
         }
 
         .pair-square.has-black {
@@ -173,19 +174,25 @@
 
         .pair-square.is-doubles {
             background-color: var(--doubles-bg);
+            border-color: #bbf7d0;
+        }
+
+        .pair-square.is-doubles.has-black {
+            border-color: #000000;
         }
 
         .pair-sum {
-            font-size: 1.75rem;
-            font-weight: 900;
+            font-size: 1.5rem;
+            font-weight: 800;
             line-height: 1;
+            color: var(--text-color);
         }
 
         .pair-dice {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: #64748b;
-            margin-top: 2px;
-            font-weight: 500;
+            margin-top: 1px;
+            font-weight: 600;
         }
 
         .die-wrapper {
