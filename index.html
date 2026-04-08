@@ -148,37 +148,44 @@
             padding: 1rem;
             border-radius: 16px;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            border: 2px solid #e5e7eb;
+            border: 1px solid #e5e7eb;
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            justify-content: center;
+            gap: 1rem;
         }
 
-        .combination.has-black {
+        .pair-square {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid transparent;
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .pair-square.has-black {
             border-color: #000000;
         }
 
-        .pairing {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.6rem;
-            border-radius: 8px;
-            background: #f8fafc;
-        }
-
-        .pairing.is-doubles {
+        .pair-square.is-doubles {
             background-color: var(--doubles-bg);
         }
 
-        .pairing-sum {
-            font-size: 1.15rem;
-            font-weight: 800;
+        .pair-sum {
+            font-size: 1.75rem;
+            font-weight: 900;
+            line-height: 1;
         }
 
-        .pairing-detail {
-            font-size: 0.85rem;
+        .pair-dice {
+            font-size: 0.75rem;
             color: #64748b;
+            margin-top: 2px;
+            font-weight: 500;
         }
 
         .die-wrapper {
@@ -317,12 +324,12 @@
             if (dice.length === 5) {
                 for (let i = 0; i < 5; i++) {
                     const remaining = dice.filter((_, idx) => idx !== i);
-                    const pairingSets = [
+                    const sets = [
                         [[remaining[0], remaining[1]], [remaining[2], remaining[3]]],
                         [[remaining[0], remaining[2]], [remaining[1], remaining[3]]],
                         [[remaining[0], remaining[3]], [remaining[1], remaining[2]]]
                     ];
-                    pairingSets.forEach(set => addOption(set));
+                    sets.forEach(set => addOption(set));
                 }
             } else if (dice.length === 4) {
                 const sets = [
@@ -341,24 +348,22 @@
 
             results.forEach(res => {
                 const el = document.createElement('div');
-                el.className = `combination ${res.hasBlackInSet ? 'has-black' : ''}`;
+                el.className = `combination`;
                 
-                function formatPairDetail(pairObj) {
-                    const d1 = pairObj.dice[0];
-                    const d2 = pairObj.dice[1];
-                    const v1 = d1.type === 'black' ? `<strong>${d1.value}</strong>` : d1.value;
-                    const v2 = d2.type === 'black' ? `<strong>${d2.value}</strong>` : d2.value;
+                function formatDice(pair) {
+                    const v1 = pair.dice[0].type === 'black' ? `<strong>${pair.dice[0].value}</strong>` : pair.dice[0].value;
+                    const v2 = pair.dice[1].type === 'black' ? `<strong>${pair.dice[1].value}</strong>` : pair.dice[1].value;
                     return `${v1} + ${v2}`;
                 }
 
                 el.innerHTML = `
-                    <div class="pairing ${res.p1.isDoubles ? 'is-doubles' : ''}">
-                        <div class="pairing-sum">${res.p1.sum}</div>
-                        <div class="pairing-detail">${formatPairDetail(res.p1)}</div>
+                    <div class="pair-square ${res.p1.isDoubles ? 'is-doubles' : ''} ${res.p1.hasBlack ? 'has-black' : ''}">
+                        <div class="pair-sum">${res.p1.sum}</div>
+                        <div class="pair-dice">${formatDice(res.p1)}</div>
                     </div>
-                    <div class="pairing ${res.p2.isDoubles ? 'is-doubles' : ''}">
-                        <div class="pairing-sum">${res.p2.sum}</div>
-                        <div class="pairing-detail">${formatPairDetail(res.p2)}</div>
+                    <div class="pair-square ${res.p2.isDoubles ? 'is-doubles' : ''} ${res.p2.hasBlack ? 'has-black' : ''}">
+                        <div class="pair-sum">${res.p2.sum}</div>
+                        <div class="pair-dice">${formatDice(res.p2)}</div>
                     </div>
                 `;
                 container.appendChild(el);
