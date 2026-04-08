@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeons, Dice & Danger</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #1a1a1a;
+            --primary-color: #2563eb;
+            --white-die-bg: #ffffff;
+            --white-die-text: #1a1a1a;
+            --black-die-bg: #1a1a1a;
+            --black-die-text: #ffffff;
+            --doubles-bg: #dcfce7;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 1rem; }
+            h1 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            text-align: center;
+        }
+
+        .dice-container {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            perspective: 1000px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        @media (max-width: 480px) {
+            .dice-container { gap: 0.75rem; margin-bottom: 1.5rem; }
+        }
+
+        .die {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid transparent;
+        }
+
+        @media (max-width: 480px) {
+            .die { width: 50px; height: 50px; font-size: 1.5rem; border-radius: 10px; }
+        }
+
+        .die.white {
+            background-color: var(--white-die-bg);
+            color: var(--white-die-text);
+            border-color: #e5e7eb;
+        }
+
+        .die.black {
+            background-color: var(--black-die-bg);
+            color: var(--black-die-text);
+            cursor: pointer;
+        }
+
+        .die.rolling {
+            animation: roll 0.4s infinite;
+        }
+
+        @keyframes roll {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(5deg) scale(1.1); }
+            50% { transform: rotate(-5deg) scale(1); }
+            75% { transform: rotate(5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            cursor: pointer;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s;
+            margin-bottom: 2rem;
+            width: auto;
+        }
+
+        @media (max-width: 480px) {
+            button { width: 100%; max-width: 280px; padding: 1rem; margin-bottom: 1.5rem; }
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.3);
+            background-color: #1d4ed8;
+        }
+
+        .combinations {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            width: 100%;
+            max-width: 1200px;
+            transition: opacity 0.3s;
+        }
+
+        @media (max-width: 1000px) {
+            .combinations { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .combinations { grid-template-columns: 1fr; }
+        }
+
+        .rolling-overlay {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .combination {
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 2px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .combination.has-black {
+            border-color: #000000;
+        }
+
+        .pairing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .pairing.is-doubles {
+            background-color: var(--doubles-bg);
+        }
+
+        .pairing-sum {
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .pairing-detail {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .black-indicator {
+            width: 6px;
+            height: 6px;
+            background: #000;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 3px;
+        }
+
+        .die-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: #64748b;
+            cursor: pointer;
+            user-select: none;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dungeons, Dice & Danger</h1>
+
+    <div class="dice-container" id="diceContainer">
+        <div class="die-wrapper"><div class="die white">?</div></div>
+        <div class="die-wrapper"><div class="die white">?</div></div>
+        <div class="die-wrapper"><div class="die white">?</div></div>
+        <div class="die-wrapper"><div class="die white">?</div></div>
+        <div class="die-wrapper">
+            <div class="die black" id="blackDie" onclick="toggleBlackFromDie()">?</div>
+            <label class="checkbox-container">
+                <input type="checkbox" id="useBlackDie" checked onchange="toggleBlackDie()">
+                Roll Black
+            </label>
+        </div>
+    </div>
+
+    <button onclick="startRoll()" id="rollBtn">Roll Dice</button>
+
+    <div class="combinations" id="combinationsContainer"></div>
+
+    <script>
+        let lastDice = [];
+
+        function toggleBlackFromDie() {
+            const cb = document.getElementById('useBlackDie');
+            cb.checked = !cb.checked;
+            toggleBlackDie();
+        }
+
+        function toggleBlackDie() {
+            const isChecked = document.getElementById('useBlackDie').checked;
+            const blackDie = document.getElementById('blackDie');
+            blackDie.style.opacity = isChecked ? '1' : '0.3';
+            blackDie.textContent = isChecked ? (blackDie.textContent === '?' ? '?' : blackDie.textContent) : '-';
+            if (lastDice.length > 0) calculatePairings(lastDice);
+        }
+
+        function startRoll() {
+            const diceContainer = document.getElementById('diceContainer');
+            const combosContainer = document.getElementById('combinationsContainer');
+            const btn = document.getElementById('rollBtn');
+            const useBlack = document.getElementById('useBlackDie').checked;
+            
+            btn.disabled = true;
+            combosContainer.classList.add('rolling-overlay');
+            
+            const diceEls = diceContainer.querySelectorAll('.die');
+            diceEls.forEach((die, index) => {
+                if (index === 4 && !useBlack) return;
+                die.classList.add('rolling');
+            });
+
+            setTimeout(() => {
+                rollDice();
+                btn.disabled = false;
+                combosContainer.classList.remove('rolling-overlay');
+            }, 600);
+        }
+
+        function rollDice() {
+            const useBlack = document.getElementById('useBlackDie').checked;
+            const dice = [];
+            for (let i = 0; i < 4; i++) dice.push({ id: i, value: Math.floor(Math.random() * 6) + 1, type: 'white' });
+            if (useBlack) dice.push({ id: 4, value: Math.floor(Math.random() * 6) + 1, type: 'black' });
+            lastDice = dice;
+            renderDice(dice);
+            calculatePairings(dice);
+        }
+
+        function renderDice(dice) {
+            const useBlack = document.getElementById('useBlackDie').checked;
+            const diceEls = document.querySelectorAll('.die');
+            for (let i = 0; i < 4; i++) {
+                diceEls[i].textContent = dice[i].value;
+                diceEls[i].classList.remove('rolling');
+            }
+            const blackDieEl = diceEls[4];
+            blackDieEl.classList.remove('rolling');
+            if (useBlack) {
+                const d = dice.find(x => x.type === 'black');
+                blackDieEl.textContent = d.value;
+                blackDieEl.style.opacity = '1';
+            } else {
+                blackDieEl.textContent = '-';
+                blackDieEl.style.opacity = '0.3';
+            }
+        }
+
+        function calculatePairings(dice) {
+            const container = document.getElementById('combinationsContainer');
+            container.innerHTML = '';
+            const uniqueOptions = new Map();
+
+            function addOption(pairSet) {
+                const p1 = createPairObj(pairSet[0]);
+                const p2 = createPairObj(pairSet[1]);
+                
+                const sums = [p1.sum, p2.sum].sort((a, b) => a - b);
+                const hasBlackInSet = p1.hasBlack || p2.hasBlack;
+
+                const key = `${sums[0]}|${sums[1]}`;
+                const existing = uniqueOptions.get(key);
+
+                if (!existing || (existing.hasBlackInSet && !hasBlackInSet)) {
+                    uniqueOptions.set(key, { 
+                        p1: p1.sum <= p2.sum ? p1 : p2, 
+                        p2: p1.sum <= p2.sum ? p2 : p1, 
+                        hasBlackInSet: hasBlackInSet 
+                    });
+                }
+            }
+
+            if (dice.length === 5) {
+                for (let i = 0; i < 5; i++) {
+                    const remaining = dice.filter((_, idx) => idx !== i);
+                    const pairingSets = [
+                        [[remaining[0], remaining[1]], [remaining[2], remaining[3]]],
+                        [[remaining[0], remaining[2]], [remaining[1], remaining[3]]],
+                        [[remaining[0], remaining[3]], [remaining[1], remaining[2]]]
+                    ];
+                    pairingSets.forEach(set => addOption(set));
+                }
+            } else if (dice.length === 4) {
+                const sets = [
+                    [[dice[0], dice[1]], [dice[2], dice[3]]],
+                    [[dice[0], dice[2]], [dice[1], dice[3]]],
+                    [[dice[0], dice[3]], [dice[1], dice[2]]]
+                ];
+                sets.forEach(set => addOption(set));
+            }
+
+            const results = Array.from(uniqueOptions.values()).sort((a, b) => {
+                if (a.hasBlackInSet !== b.hasBlackInSet) return a.hasBlackInSet ? 1 : -1;
+                if (a.p1.sum !== b.p1.sum) return a.p1.sum - b.p1.sum;
+                return a.p2.sum - b.p2.sum;
+            });
+
+            results.forEach(res => {
+                const el = document.createElement('div');
+                el.className = `combination ${res.hasBlackInSet ? 'has-black' : ''}`;
+                el.innerHTML = `
+                    <div class="pairing ${res.p1.isDoubles ? 'is-doubles' : ''}">
+                        <div class="pairing-sum">${res.p1.sum}${res.p1.hasBlack ? '<span class="black-indicator"></span>' : ''}</div>
+                        <div class="pairing-detail">${res.p1.dice[0].value} + ${res.p1.dice[1].value}</div>
+                    </div>
+                    <div class="pairing ${res.p2.isDoubles ? 'is-doubles' : ''}">
+                        <div class="pairing-sum">${res.p2.sum}${res.p2.hasBlack ? '<span class="black-indicator"></span>' : ''}</div>
+                        <div class="pairing-detail">${res.p2.dice[0].value} + ${res.p2.dice[1].value}</div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function createPairObj(pair) {
+            return {
+                dice: pair,
+                sum: pair[0].value + pair[1].value,
+                hasBlack: pair[0].type === 'black' || pair[1].type === 'black',
+                isDoubles: pair[0].value === pair[1].value
+            };
+        }
+    </script>
+</body>
+</html>
