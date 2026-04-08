@@ -306,7 +306,8 @@
                 const p1 = createPairObj(pairSet[0]);
                 const p2 = createPairObj(pairSet[1]);
                 
-                const sums = [p1.sum, p2.sum].sort((a, b) => a - b);
+                // Sort sums descending (larger first)
+                const sums = [p1.sum, p2.sum].sort((a, b) => b - a);
                 const hasBlackInSet = p1.hasBlack || p2.hasBlack;
 
                 const key = `${sums[0]}|${sums[1]}`;
@@ -314,8 +315,8 @@
 
                 if (!existing || (existing.hasBlackInSet && !hasBlackInSet)) {
                     uniqueOptions.set(key, { 
-                        p1: p1.sum <= p2.sum ? p1 : p2, 
-                        p2: p1.sum <= p2.sum ? p2 : p1, 
+                        p1: p1.sum >= p2.sum ? p1 : p2, 
+                        p2: p1.sum >= p2.sum ? p2 : p1, 
                         hasBlackInSet: hasBlackInSet 
                     });
                 }
@@ -340,10 +341,14 @@
                 sets.forEach(set => addOption(set));
             }
 
+            // Custom Sort: 
+            // 1. Sets WITHOUT black die first
+            // 2. Then by sum1 (descending)
+            // 3. Then by sum2 (descending)
             const results = Array.from(uniqueOptions.values()).sort((a, b) => {
                 if (a.hasBlackInSet !== b.hasBlackInSet) return a.hasBlackInSet ? 1 : -1;
-                if (a.p1.sum !== b.p1.sum) return a.p1.sum - b.p1.sum;
-                return a.p2.sum - b.p2.sum;
+                if (a.p1.sum !== b.p1.sum) return b.p1.sum - a.p1.sum;
+                return b.p2.sum - a.p2.sum;
             });
 
             results.forEach(res => {
